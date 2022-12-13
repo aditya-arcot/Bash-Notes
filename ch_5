@@ -167,16 +167,61 @@ do
 	ls -ld $dir
 done
 
+echo
+echo
 
 
+echo section 4
+echo ---------
+# case statement
+# patterns can be several patterns separated by |
+# no default case - can use *
+
+# case expression in
+# 	pattern1 )
+# 		statements ;;
+#	pattern2 | pattern3 )
+#		statements;;
+# esac
+
+temp=2
+case $temp in
+	1 | 2)
+		echo statement 1;;
+	*)
+		echo statement 2;;
+esac
+
+echo
+echo
 
 
+echo section 5
+echo ---------
+# select statement
+# generate menu of each item in list
+# 	default: "$@"
+# choice stored in variable name, selected number stored in $REPLY
+# repeats forever unless break is used
+# 	can also be used for any control structure
 
+# select name [in list]
+# do
+# 	statements that can use $name
+# done
 
+IFS=" "
+PS3="choose option: " # used for custom prompt
+options="a b c "
+select name in $options
+do
+	echo selected: $name \($REPLY\)
+	break
+done
+unset IFS PS3
 
-
-
-
+echo
+echo
 
 
 

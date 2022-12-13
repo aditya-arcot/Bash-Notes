@@ -1,0 +1,25 @@
+# select directory from list in directory stack
+# move directory to front of list, cd
+DIR_STACK="$PWD /usr /home /bin"
+selectd ()
+{
+	IFS=" "
+	PS3='choose directory: '
+	DIR_STACK=" $DIR_STACK "
+	select selection in $DIR_STACK
+	do
+		if [ $selection ]
+		then
+			dir_stack_new="$selection ${DIR_STACK%%$selection *}"
+			dir_stack_new="$dir_stack_new ${DIR_STACK##* $selection}"
+			dir_stack_new=${dir_stack_new//  / }	
+			dir_stack_new=${dir_stack_new//  / }
+			dir_stack_new=${dir_stack_new% }
+			cd $selection
+			break
+		else
+			echo invalid selection
+		fi
+	done
+	unset IFS selection dir_stack_new PS3
+}
