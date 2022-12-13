@@ -1,0 +1,19 @@
+# print info on each directory in PATH
+
+IFS=:
+
+for dir in $PATH
+do
+	if [ ! -z "$dir" ] # skip empty string
+	then
+		if [ ! -e "$dir" ]
+		then
+			echo "$dir" does not exist
+		elif [ ! -d "$dir" ]
+		then
+			echo "$dir" is not a directory
+		else
+			ls -ld $dir
+		fi
+	fi
+done

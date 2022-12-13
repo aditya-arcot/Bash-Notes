@@ -1,0 +1,17 @@
+# task_4-5 filename columnnum
+
+# extract column specified from file
+# columns separated by |
+
+# sample input - albums_2
+
+echo filename: ${1:?filename required}
+echo column num: ${2:?column num required}
+echo
+
+# cut extracts columns from tabular data
+# -f is field number
+# -d is delimiter (| needs to be escaped)
+cut -f$2 -d\| $1
+
+

@@ -1,0 +1,185 @@
+# command exit status
+# integer code returned to calling process
+# 0 is usually OK, 1-255 usually error
+
+echo section 0
+echo ---------
+# if / [elif] / [else] clause
+# uses exit status as conditionals
+
+path=${1:-.} # set cd path to . if none specified
+echo path for cd: $path
+
+# based on exit status of cd
+if cd $path
+then
+	echo valid - code $? # stores exit status of last command
+else
+	echo invalid - code $? 
+fi
+
+
+# reverse status - !
+# combine statuses for multiple commands- &&, ||
+#	all commands are not necessarily run in early exit
+
+echo
+echo
+
+
+echo section 1
+echo ---------
+# builtin command [arguments]
+# specifies using builtin function over custom function with same name
+
+# return N
+# can be used in functions and sourced scripts
+# optional - default is $?
+# not the same purpose as return in other languages
+
+cd () # other valid syntax for function
+{
+	echo custom cd wrapper
+	echo args: "$@"
+	builtin cd "$@"
+	exit=$?
+	echo "$OLDPWD -> $PWD"
+	echo
+	return $exit
+}
+cd ..
+cd bash
+
+echo unsetting wrapper
+unset cd
+
+
+# exit N
+# exits entire script with status
+
+echo
+echo
+
+
+echo section 2
+echo ---------
+# condition tests - [ condition ] (aka test), [[ condition ]]
+# spaces required
+# double bracket test does not perform word splitting, pathname expansion
+# returns exit status that tells whether condition is true
+# combining
+#	if [ condition ] && [ condition ]; then
+#	if command && [ condition ]; then
+# negating
+#	if ![ condition ]; then
+
+
+# string comparison operators
+# 2 strings
+#	=, !=, <, >
+# 1 string - [operator] str1
+# 	-n: not null
+#	-z: is null
+#	if using variable, enclose in "" to prevent possible expansion to null 
+
+
+# a defined
+a=2
+if [ -n "$a" ]; then
+	echo 'a is defined'
+fi
+
+# b undefined
+if [ -z "$b" ]; then
+	echo 'b is undefined'
+fi
+
+
+# file attribute operators
+# 2 files - file1 [operator] file2
+#	-nt: newer than
+#	-ot: older than
+# 1 file - [operator] file1
+#	-a: exists
+#	-d: exists, directory
+#	-e: exists
+#	-f: exists, regular file
+#	-r: read permissions
+#	-s: exists, not empty
+#	-w: write permissions
+#	-x: execute permissions for file, search permission for dir
+#	-N: file modified since last read
+#	-O: own file
+#	-G: file group ID matches yours
+
+
+# task_4-1 exists
+[ -a task_4-1 ]
+echo $?
+
+# task_4-0 does not exist
+[ -a task_4-0 ]
+echo $?
+
+
+# ! can be used to negate
+# creating complex expressions
+# 	parenthesis
+# 		must be escaped
+#		space before and after
+#	-a, -o 
+#		similar to &&, || operators
+#		only available in test conditional expression
+
+
+dirname=~/Desktop/bash
+echo $dirname
+if [ ! -z $dirname ] && [ \( -d $dirname \) -a \( -x $dirname \) ]; then
+	echo dirname string not null, is a directory, and is searchable
+fi
+
+
+# arithmetic test operators - used to combine integer tests with others in same conditional
+# -lt: less than
+# -le: less than or equal to
+# -eq: equal
+# -gt: greater than
+# -ge: greater than or equal to
+# -ne: not equal
+
+echo
+echo
+
+
+echo section 3
+echo ---------
+# for loop
+# default list is "$@" - quoted list of cmd line args
+
+# for name [in list]
+# do
+# 	statements that can use $name
+# done
+
+IFS=:
+for dir in $PATH
+do
+	ls -ld $dir
+done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

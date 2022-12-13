@@ -1,0 +1,26 @@
+# highest lines
+# task_4-1 filename [-lines]
+
+# sample input - albums
+
+# default lines = 10
+
+# task - print N top album lines
+# steps - sort, print
+
+if [ -z "$1" ]; then
+    echo 'usage: task_4-1 filename [-N]'
+    exit 1
+fi
+
+
+file=$1
+n=${2:--10}
+
+echo file: $file
+echo lines: $n
+echo
+
+sort -nr $file | head $n
+
+

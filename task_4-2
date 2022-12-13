@@ -1,0 +1,7 @@
+# task_4-2 filename
+
+# replace .pcx file extension with .jpeg
+
+echo original file: ${1:?filename required}
+echo edited file: ${1%.pcx}.jpeg
+

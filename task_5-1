@@ -1,0 +1,100 @@
+# task_5-1 pathname
+# print file/folder info
+
+fileinfo ()
+{
+	# input not null
+	if [ -z "$1" ]; then
+		echo usage: task_5-1 pathname
+
+		#if [ "$sourced" = true ]; then
+		#	return 1
+		#else
+		#	exit 1
+		#fi
+		
+		return 1	
+	fi
+
+
+	echo pathname: $1
+
+
+	# exists
+	if [ ! -e $1 ]; then
+		echo path does not exist
+	
+		#if [ "$sourced" = true ]; then
+		#	return 1
+		#else
+		#	exit 1
+		#fi
+		
+		return 1
+	fi
+
+
+	# directory, searchable
+	if [ -d $1 ]; then
+		echo -n directory that you can
+		if [ ! -x $1 ]; then
+			echo -n not
+		fi
+		echo " search"
+	# regular file
+	elif [ -f $1 ]; then
+		echo regular file
+	# non-regular file
+	else
+		echo special file
+	fi
+
+
+	# own
+	echo -n "you "
+	if [ ! -O $1 ]; then
+		echo -n "do not "
+	fi
+	echo own it	
+
+
+	# read
+	echo -n you can
+	if [ ! -r $1 ]; then
+		echo -n not
+	fi
+	echo " read it"
+
+
+	# write
+	echo -n you can
+	if [ ! -w $1 ]; then
+		echo -n not
+	fi
+	echo " write to it"
+
+
+	# execute - only for file
+	if [ ! -d $1 ]; then # not directory
+		echo -n you can
+		if [ ! -x $1 ]; then
+			echo -n not
+		fi
+		echo " execute it"
+	fi
+}
+
+#unset sourced
+#if [ $0 = -bash ]; then # sourced
+#	sourced=true
+#fi
+
+
+for pathname
+do
+	fileinfo "$pathname"
+	echo
+done
+
+
+

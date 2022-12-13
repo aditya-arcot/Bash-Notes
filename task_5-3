@@ -1,0 +1,79 @@
+
+# recursive ls with directory structure
+# max depth set to 4
+recls ()
+{
+	line="|"
+	singletab="\t"
+	maxtab=$line$singletab$line$singletab$line$singletab$line$singletab
+
+	if [ -z "$@" ]; then
+		__recls_helper .
+	else
+		__recls_helper $@
+	fi
+	
+	unset singletab tab maxtab
+}
+
+	
+__recls_helper ()
+{
+	for tryfile
+	do
+		if [ ! -e "$tryfile" ]
+		then
+			echo $tryfile does not exist
+		elif [ -d "$tryfile" ]
+		then
+			echo $tryfile
+			thisfile=$tryfile
+			__recdir $(ls $tryfile)
+		else
+			echo $tryfile
+		fi
+		echo
+	done
+	
+}
+
+__recdir ()
+{
+	tab=$tab$line$singletab
+
+	if [ "$tab" = "$maxtab" ]; then
+		tab=${tab%"$line$singletab"}
+		echo -e -n $tab$line
+		echo -e "\t"...
+		return 0
+	fi
+	
+	for file
+	do
+		echo -e -n $tab
+		echo -n $file
+
+		thisfile=$thisfile/$file
+	
+		if [ -d "$thisfile" ]
+		then
+			echo /
+			__recdir $(ls $thisfile)
+		else
+			echo
+		fi
+
+		thisfile=${thisfile%/*}
+	done
+
+	tab=${tab%"$line$singletab"}
+}
+
+
+
+
+
+
+
+
+

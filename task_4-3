@@ -1,0 +1,8 @@
+# task_4-3 path
+
+# remove any directory prefix from path
+
+echo path: ${1:?path required}
+echo filename: ${1##*/}
+
+

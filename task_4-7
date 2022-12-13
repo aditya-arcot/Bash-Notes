@@ -1,0 +1,22 @@
+# task_4-7 month [day]
+# month format - mmm
+
+# get filenames of files modified on date
+
+# ls
+# date begins on character 43
+# filename begins on character 56
+
+# grep
+# -i ignores case
+# pattern string checks for any 42 characters + date
+
+# cut
+# print line column 56 onwards
+
+echo month: ${1:?month required}
+echo day: ${2:-any}
+echo
+
+date="$1 $2"
+ls -l | grep -i "^.\{42\}$date" | cut -c56-

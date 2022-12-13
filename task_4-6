@@ -1,0 +1,9 @@
+# task_4-6
+
+# send mail to logged in users
+
+# who shows info about logged in users
+# columns separated by spaces
+# first column is username
+
+mail $(who | cut -d' ' -f1) # mail is passed list of users separated by space

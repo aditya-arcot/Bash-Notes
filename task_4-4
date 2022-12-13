@@ -1,0 +1,7 @@
+# task_4-4
+
+# print directories of PATH on separate lines
+
+# -e allows for backslash escape
+echo -e ${PATH//:/'\n'}
+
