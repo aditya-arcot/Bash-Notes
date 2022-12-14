@@ -1,0 +1,9 @@
+# copy file to directory
+
+until cp $1 $2
+do
+	echo failed copy. sleeping for 5s ...
+	sleep 5
+done
+echo success
+

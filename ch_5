@@ -224,6 +224,55 @@ echo
 echo
 
 
+echo section 6
+echo ---------
+# while statement
+# run while condition is true
+#	empty string evaluates as false
+
+# while condition
+# do
+# 	statements
+# done
+
+a=test
+while [ $a ]; do
+	echo in while loop
+	unset a
+done
+echo finished
+echo
+
+# until statement
+# run until condition is true / command gives 0 exit code
+# can be converted to while by negating condition
+
+# until condition
+# do
+# 	statements
+# done
+
+until [ $a ]; do
+	echo in until loop
+	a=test
+done
+echo finished
+unset a
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,23 @@
+# print info on each directory in PATH
+
+path=$PATH: # to make code easier
+
+while [ $path ]
+do
+	dir=${path%%:*}
+	if [ ! -z "$dir" ] # skip empty string
+	then
+		if [ ! -e "$dir" ]
+		then
+			echo "$dir" does not exist
+		elif [ ! -d "$dir" ]
+		then
+			echo "$dir" is not a directory
+		else
+			ls -ld $dir
+		fi
+	fi
+	
+	path=${path#*:}
+done
+
