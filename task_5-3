@@ -28,7 +28,7 @@ __recls_helper ()
 		then
 			echo $tryfile
 			thisfile=$tryfile
-			__recdir $(ls $tryfile)
+			__recdir $(ls -a $tryfile)
 		else
 			echo $tryfile
 		fi
@@ -50,20 +50,23 @@ __recdir ()
 	
 	for file
 	do
-		echo -e -n $tab
-		echo -n $file
+		if [ "$file" != .. ] && [ "$file" != . ]	
+		then		
+			echo -e -n $tab
+			echo -n $file
 
-		thisfile=$thisfile/$file
+			thisfile=$thisfile/$file
 	
-		if [ -d "$thisfile" ]
-		then
-			echo /
-			__recdir $(ls $thisfile)
-		else
-			echo
-		fi
+			if [ -d "$thisfile" ]
+			then
+				echo /
+				__recdir $(ls -a $thisfile)
+			else
+				echo
+			fi
 
-		thisfile=${thisfile%/*}
+			thisfile=${thisfile%/*}
+		fi
 	done
 
 	tab=${tab%"$line$singletab"}
