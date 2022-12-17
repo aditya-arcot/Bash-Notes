@@ -1,0 +1,14 @@
+# extension of du
+# task_6-1 [paths]
+
+for dir in ${*:-.}; # use . if no args
+do
+	if [ -e $dir ]; then
+		blocks=$(sudo du -s $dir | cut -f1)
+		let bytes=blocks*1024
+		echo $dir
+		echo blocks: $blocks
+		echo bytes: $bytes
+		echo
+	fi
+done
