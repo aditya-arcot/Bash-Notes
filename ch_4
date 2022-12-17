@@ -96,12 +96,12 @@ echo ---------
 # string substitution operators
 # v1 exists, v2 does not
 
-# return value if exists and not null or default
+# return value if exists and not null or default, otherwise word
 echo ${v1:-arcot}
 echo ${v2:-arcot}
 echo
 
-# set variable if doesn't exist or null and return value
+# set variable to word if doesn't exist or null and return value
 echo ${v1:=arcot}
 echo ${v2:=arcot}
 echo
@@ -114,7 +114,7 @@ echo ${v1:?doesnt exist}
 # echo ${v2:?doesnt exist} #commented to avoid abort
 echo
 
-# return message if exists and not null, or return null
+# return word if var exists and not null, or return null
 echo ${v1:+exists}
 echo ${v2:+exists}
 echo
