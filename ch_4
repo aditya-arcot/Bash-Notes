@@ -30,7 +30,7 @@ echo ---------
 # use {} for numbers above 9 - ${10}
 echo 0 1 2: $0 $1 $2
 # called together
-echo non-zero: $@ # doubled quoted - separate strings
+echo non-zero: $@ # double quoted - separate strings
 echo non-zero: $* # double quoted - single string separated by first character of IFS
 # count
 echo non-zero count: $#
