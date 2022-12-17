@@ -1,0 +1,222 @@
+# Command-Line Options
+
+echo section 0
+echo ---------
+
+# shift [N]
+# shifts arguments by N (1 default)
+
+set -- -a -b -c d # set arguments
+echo args: $*
+
+# check 1st arg until non-option
+while [ -n "$(echo "$1" | grep -)" ]; do
+	# process option using case
+	# default, early exit for illegal option
+	# if option has its own argument, can shift twice
+	shift
+	echo remaining args: $*
+done
+
+echo
+echo
+
+
+echo section 1
+echo ---------
+
+# getopts [options_string] [variable_name]
+# options_string contains:
+#	letters - valid options
+#	colons - follows option that requires an argument
+#		leading colon prevents default error message
+# variable set to ? if illegal
+# 	can be handled in case statement
+# OPTARG - option argument
+# OPTIND - index of start of non-option arguments
+# exit status 0 until no more options, then 1
+# shift after loop ends
+
+set -- -a -bc -d 0 f
+echo args: $*
+
+unset OPTIND # not cleared automatically
+while getopts ":abcd:" option; do
+	case $option in
+		a ) echo option a ;;
+		b ) echo option b ;;
+		c ) echo option c ;;
+		d ) echo option d, arg: $OPTARG ;;
+		\? ) echo unknown option
+			exit 1
+	esac
+done
+
+echo args: $*
+
+echo
+echo
+
+
+echo section 2
+echo ---------
+
+# declare [option] [variable]
+# options
+# 	-f	display functions
+# 	-F	display function names
+# 	-a	display / declare array
+# 	-i	display / declare int
+# 	-r	display / declare read-only
+# 	-x	display / declare export
+# use - to turn option on, + to turn off
+# works same was as local in functions
+
+a=2
+b=3
+c=a*b
+echo without declare: $c
+ 
+declare -i c=a*b # can also assign in another line
+echo with declare: $c
+
+unset a b c
+declare +i c # important if reusing var name with different type
+
+echo
+echo
+
+
+echo section 3
+echo ---------
+# quoting strings
+# single quotes - string literal
+# double quotes - interpretation, expansion (ex: $, \)
+#	don't use unless necessary
+
+a=3
+echo '$a'
+echo "$a"
+unset a
+
+echo
+echo
+
+
+echo section 4
+echo ---------
+# arithmetic expressions - $((...))
+# operators
+# 	++, --
+#		post-increment (x++) - return x, then add
+#		pre-increment (++x) - add, then return x
+# 	+, -, *, /, %
+# 		assignment forms also permitted
+#	<<, >> - bit shift
+#	&, |, ^ - bitwise and, or, exclusive or
+#	!, ! - bitwise not, logical not
+#	, - sequential execution
+
+a=5
+echo a: $a
+echo a+5: $((a+5))
+echo a: $a
+
+echo a+=5: $((a+=5))
+echo a: $a
+unset a
+echo
+
+
+# can use parenthesis for grouping - no need to escape
+b=2
+echo b: $b
+echo b+5*2: $((b+5*2))
+echo \(b+5\)*2: $(( ($b+5)*2 ))
+unset b
+echo
+
+
+# relational operators
+# 	<, >, <==, >==, ==, !=
+# 	&&, || - logical and, or
+# can be used between values or subexpressions
+# results in truth value - 1 for true, 0 for false
+
+a=2 b=5
+echo $((a==b))
+echo $((b>a))
+unset a b
+echo
+
+
+# base N numbers
+# B#N - N base B
+# base 2-36
+echo $((5#23))
+echo
+echo
+
+
+echo section 5
+echo ---------
+# arithmetic test
+# same syntax as string comparison (ch 5) - [ a operator b ]
+# alternate syntax - ((...))
+# operators: -lt, -gt, -le, -ge, -eq, -ne
+# 0 exit status for true, 1 for false - opposite of arithmetic expression above
+
+[ 5 -lt 4 ]
+echo $?
+echo
+echo
+
+
+echo section 6
+echo ---------
+# let intvar=expression
+# same function as declare -i var
+# no need to use $(( and ))
+# good practice to use single quotes 
+# 	avoid special character replacement
+#	allows using whitespace
+
+let x='(2 + 3) * 5'
+echo $x
+unset x
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
