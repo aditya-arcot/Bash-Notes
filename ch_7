@@ -1,0 +1,60 @@
+# Input/Ouput and Command-Line Processing
+
+## I/O redirectors
+# cmd1 | cmd2	pipe
+
+# > file	direct stdout to file (same as 1> file)
+# < file	take stdin from file (same as 0< file)
+# >> file	direct stdout to file, append if already exists
+# n> file	direct file descriptor n to file
+# n< file	take file descriptor n from file
+# n>> file	direct file descriptor n to file, append if already exists
+
+# >| file	force stdout to file even if noclobber is set
+#		noclobber prevents shell from overwriting file with > file
+# n>| file	force output to file from file descriptor n even if noclobber is set
+
+# <> file	use file as both stdin and stdout
+# n<> file	use file as both input and output for file descriptor n
+
+# << label	here-document
+#		allows for batch input to programs
+#		stop sending input when label is found
+
+# n>&		duplicate stdout to file descriptor n
+# n<&		duplicate stdin from dile descriptor n
+
+# n>&m		file descriptor n is made to be copy of output file descriptor
+# 		ex: 2>&1 - stderr file descriptor becomes copy of stdout file descriptor, so both go to same place
+# n<&m		file descriptor n is made to be copy of input file descriptor
+
+# &> file	direct stdout and stderr to file
+
+# <&-		close stdin
+# >&-		close stdout
+# n>&-		close output from file descriptor n
+# n<&-		close input from file descriptor n
+
+# n>&word	if n not specified, stdout (file descriptor 1) used
+# 		if digits in word do not specify file descriptor open for output, redirection error
+# 		as special case, n not specified and word does not expand to 1+ digits, stdout and stderr redirected
+# n<&word	if word expands to 1+ digits, file descriptor n is made to be copy of that file descriptor
+# 		if digits in word do not specify file descriptor open for input, redirection error
+#		if word evaluates to -, file descriptor n closed
+#		if n not specified, stdin (file descriptor 0) used
+# n>&digit-	move file descriptor digit to file descriptor n, or stdout (1) if n not specified
+# n<&digit-	move file descriptor digit to file descriptor n, or stdin (0) if n not specified
+# 		digit closed after being duplicated to n
+
+
+## File descriptors
+# integers (starting at 0) that refer to particular streams of data associated with a process
+# new process usually has 3
+# 	0 - stdin
+# 	1 - stdout
+# 	2 - stderr
+# additional files opened for output or input are assigned from 3 on
+
+
+
+
