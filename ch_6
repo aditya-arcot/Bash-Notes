@@ -45,12 +45,13 @@ while getopts ":abcd:" option; do
 	case $option in
 		a ) echo option a ;;
 		b ) echo option b ;;
-		c ) echo option c ;;
+		c ) echo option c, arg: $OPTARG ;;
 		d ) echo option d, arg: $OPTARG ;;
 		\? ) echo unknown option
-			exit 1
+			return 1
 	esac
 done
+shift $((OPTIND-1))
 
 echo args: $*
 set --
