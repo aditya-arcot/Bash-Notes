@@ -1,40 +1,72 @@
+# recursive ls with hierarchy structure
+# default depth - 4
 
-# recursive ls with directory structure
-# max depth set to 4
+# non-integer depth input results in ls without depth arg
+
+# use only local vars
+
 recls ()
 {
-	line="|"
-	singletab="\t"
-	maxtab=$line$singletab$line$singletab$line$singletab$line$singletab
+	local line="|"
+	local singletab="\t"
+	local OPTIND OPTARG option depth hidden="false"
+
+	while getopts ":d:h" option; do
+		case $option in
+			d )
+				if [ $OPTARG  -lt 1 ]; then
+					echo depth must be greater than 0
+					return 1
+				fi
+				depth=$OPTARG;;
+			h )
+				hidden="true";;
+			\? ) echo usage: recls [-d depth] [-h]
+					return 1
+		esac
+	done
+	shift $((OPTIND-1))
+
+	if [ -z $depth ]; then
+		depth=4
+	fi
+
+	local i maxtab
+	for ((i=0; i<$depth; i++)); do
+		maxtab+="$line$singletab"
+	done
 
 	if [ -z "$@" ]; then
 		__recls_helper .
 	else
 		__recls_helper $@
 	fi
-	
-	unset singletab tab maxtab
+
+	unset tab file subfile
 }
 
-	
+
 __recls_helper ()
 {
-	for tryfile
+	for file
 	do
-		if [ ! -e "$tryfile" ]
+		if [ ! -e "$file" ]
 		then
-			echo $tryfile does not exist
-		elif [ -d "$tryfile" ]
+			echo $file does not exist
+		elif [ -d "$file" ]
 		then
-			echo $tryfile
-			thisfile=$tryfile
-			__recdir $(ls -a $tryfile)
+			echo $file
+			if [ $hidden = true ]; then
+				__recdir $(ls --color=always -a $file)
+			else
+				__recdir $(ls --color=always $file)
+			fi
 		else
-			echo $tryfile
+			echo $file
 		fi
 		echo
 	done
-	
+
 }
 
 __recdir ()
@@ -47,36 +79,35 @@ __recdir ()
 		echo -e "\t"...
 		return 0
 	fi
-	
-	for file
-	do
-		if [ "$file" != .. ] && [ "$file" != . ]	
-		then		
-			echo -e -n $tab
-			echo -n $file
 
-			thisfile=$thisfile/$file
-	
-			if [ -d "$thisfile" ]
+	for colored_subfile
+	do
+		subfile=$(echo $colored_subfile | decolorize)
+		
+		if [ "$subfile" != .. ] && [ "$subfile" != . ]
+		then
+			echo -e -n $tab
+			echo -n $colored_subfile
+
+			file=$file/$subfile
+
+			if [ -d "$file" ]
 			then
 				echo /
-				__recdir $(ls -a $thisfile)
+				if [ $hidden = true ]; then
+					__recdir $(ls --color=always -a $file)
+				else
+					__recdir $(ls --color=always $file)
+				fi
 			else
+				#echo -e "$file"
 				echo
 			fi
 
-			thisfile=${thisfile%/*}
+			file=${file%/*}
 		fi
 	done
 
 	tab=${tab%"$line$singletab"}
 }
-
-
-
-
-
-
-
-
 
