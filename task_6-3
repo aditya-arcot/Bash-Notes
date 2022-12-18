@@ -1,0 +1,26 @@
+# not an actual task in the book
+# modified from example on pg 159
+
+# parse account names, IDs and print in order
+
+# /etc/passwd contains users
+# column 1 - account name
+# column 3 - user ID
+# delimiter - :
+
+for i in $(cut -f 1,3 -d: /etc/passwd); do
+	id=${i#*:}
+	name=${i%:*}
+	#echo -e "${id}\t${name}"
+	accounts[id]=$name
+done
+
+for i in "${!accounts[@]}"; do
+	echo -ne "${i}\t"
+	echo ${accounts[$i]}
+done
+
+echo
+echo total: ${#accounts[@]} accounts
+
+unset accounts

@@ -53,6 +53,7 @@ while getopts ":abcd:" option; do
 done
 
 echo args: $*
+set --
 
 echo
 echo
@@ -184,17 +185,88 @@ echo ---------
 let x='(2 + 3) * 5'
 echo $x
 unset x
+echo
+echo
 
 
+echo section 7
+echo ---------
+# arithmetic for loops
+# left out values evaluation to true
+
+# for (( initialization; ending condition; update ))
+# do
+# 	statements
+# done
+
+for ((i=5; i<10; i++)); do
+	echo $i
+done
+echo
+echo
 
 
+echo section 8
+echo ---------
+# arrays
+# elements can be accessed by index (starts at 0)
+# indices can be an arithmetic expression >= 0
+echo ${BASH_VERSINFO[2+3]}
+# index 0 assumed if none provided
+echo $BASH_VERSINFO
 
+# special indices - all elements
+# @, *
+# work same way as for positional parameters
+# unquoted - expands array to separate words
+# double quoted - @ is same, * expands array to first char in IFS
+# useful in for loops
+echo ${BASH_VERSINFO[@]}
+IFS=-
+echo "${BASH_VERSINFO[*]}"
+unset IFS
+echo
 
+# array can be manually created
+#	empty or nonempty
+# attributes apply to entire array
+declare -a arr
+declare -p arr # print
+unset arr
+echo
 
+# assignment automatically creates array
+# unassigned values are not created (null if explicitly referenced)
+arr[0]=a
+arr[2]=c
+echo ${arr[@]} # a c
 
+# compound assignment
+# indices
+# 	not required
+# 	out-of-order allowed
+# consecutive assignment above last specified index (or 0)
+# overwrites entire array if previously defined
+arr=(a b [3]=d e [2]=c)
+echo ${arr[@]} # a b c d e
+echo
 
+# # - check length (entire array or element)
+echo ${#arr[@]}
+echo ${#arr[2]}
+echo
 
+# ! - check assigned indices
+echo ${!arr[@]}
+echo
 
+# use unset to destoy
+# element or entire array
+unset arr[2]
+echo ${arr[*]}
+
+unset arr
+declare -p arr
 
 
 
