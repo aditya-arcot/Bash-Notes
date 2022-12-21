@@ -4,18 +4,18 @@
 # 	variables, functions are not saved to shell
 # run in shell using 'source first_script'
 
-echo section 0
-echo ---------
+
+echo $LINENO
 # setting a variable
 hatter=mad
 echo set variable hatter - $hatter
 # can be unset using 'unset' command
+unset hatter
 echo
 echo
 
 
-echo section 1
-echo ---------
+echo $LINENO
 # use 'type' to find definitions
 # '-a' argument shows all in precedence order
 type -a ls
@@ -23,8 +23,7 @@ echo
 echo
 
 
-echo section 2
-echo ---------
+echo $LINENO
 # positional arguments
 # called by number
 # use {} for numbers above 9 - ${10}
@@ -50,8 +49,7 @@ echo
 echo
 
 
-echo section 3
-echo ---------
+echo $LINENO
 # other variables are global to script
 v1=aditya
 echo $v1
@@ -68,8 +66,7 @@ echo
 echo
 
 
-echo section 4
-echo ---------
+echo $LINENO
 # variables can be kept local with keyword 'local'
 v1=aditya
 echo $v1
@@ -91,8 +88,7 @@ echo
 # character after name is not letter, digit, or underscore
 
 
-echo section 5
-echo ---------
+echo $LINENO
 # string substitution operators
 # v1 exists, v2 does not
 
@@ -127,8 +123,7 @@ echo
 echo
 
 
-echo section 6
-echo ---------
+echo $LINENO
 # pattern matching
 # patterns can contain wildcard characters
 path=/home/cam/book/long.file.name
@@ -163,8 +158,7 @@ echo
 echo
 
 
-echo section 7
-echo ---------
+echo $LINENO
 # grep searches for pattern in files
 grep 's ' task*
 echo
@@ -174,8 +168,7 @@ echo
 echo
 
 
-echo section 8
-echo ---------
+echo $LINENO
 # command substitution
 # using standard error of command as variable value
 a=$(ls -l $(type -path -all ls))
@@ -184,8 +177,7 @@ echo
 echo
 
 
-echo section 9
-echo ---------
+echo $LINENO
 # pushd dir - cd to dir, push dir to stack
 # popd - pop dir (current) from stack, cd to new top
 # stack can be viewed by dirs

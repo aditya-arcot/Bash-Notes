@@ -1,18 +1,16 @@
 # Command-Line Options
 
-echo section 0
-echo ---------
-
 # shift [N]
 # shifts arguments by N (1 default)
 
+echo $LINENO
 set -- -a -b -c d # set arguments
 echo args: $*
 
 # check 1st arg until non-option
 while [ -n "$(echo "$1" | grep -)" ]; do
 	# process option using case
-	# default, early exit for illegal option
+	#   default - early exit for illegal option
 	# if option has its own argument, can shift twice
 	shift
 	echo remaining args: $*
@@ -21,9 +19,6 @@ done
 echo
 echo
 
-
-echo section 1
-echo ---------
 
 # getopts [options_string] [variable_name]
 # options_string contains:
@@ -37,6 +32,7 @@ echo ---------
 # exit status 0 until no more options, then 1
 # shift after loop ends
 
+echo $LINENO
 set -- -a -bc -d 0 f
 echo args: $*
 
@@ -60,9 +56,6 @@ echo
 echo
 
 
-echo section 2
-echo ---------
-
 # declare [option] [variable]
 # options
 # 	-f	display functions
@@ -74,6 +67,7 @@ echo ---------
 # use - to turn option on, + to turn off
 # works same was as local in functions
 
+echo $LINENO
 a=2
 b=3
 c=a*b
@@ -89,13 +83,12 @@ echo
 echo
 
 
-echo section 3
-echo ---------
 # quoting strings
 # single quotes - string literal
 # double quotes - interpretation, expansion (ex: $, \)
 #	don't use unless necessary
 
+echo $LINENO
 a=3
 echo '$a'
 echo "$a"
@@ -105,8 +98,6 @@ echo
 echo
 
 
-echo section 4
-echo ---------
 # arithmetic expressions - $((...))
 # operators
 # 	++, --
@@ -119,6 +110,7 @@ echo ---------
 #	!, ! - bitwise not, logical not
 #	, - sequential execution
 
+echo $LINENO
 a=5
 echo a: $a
 echo a+5: $((a+5))
@@ -128,14 +120,17 @@ echo a+=5: $((a+=5))
 echo a: $a
 unset a
 echo
-
+echo
 
 # can use parenthesis for grouping - no need to escape
+
+echo $LINENO
 b=2
 echo b: $b
 echo b+5*2: $((b+5*2))
 echo \(b+5\)*2: $(( ($b+5)*2 ))
 unset b
+echo
 echo
 
 
@@ -145,37 +140,38 @@ echo
 # can be used between values or subexpressions
 # results in truth value - 1 for true, 0 for false
 
+echo $LINENO
 a=2 b=5
 echo $((a==b))
 echo $((b>a))
 unset a b
+echo
 echo
 
 
 # base N numbers
 # B#N - N base B
 # base 2-36
+
+echo $LINENO
 echo $((5#23))
 echo
 echo
 
 
-echo section 5
-echo ---------
 # arithmetic test
 # same syntax as string comparison (ch 5) - [ a operator b ]
 # alternate syntax - ((...))
 # operators: -lt, -gt, -le, -ge, -eq, -ne
 # 0 exit status for true, 1 for false - opposite of arithmetic expression above
 
+echo $LINENO
 [ 5 -lt 4 ]
 echo $?
 echo
 echo
 
 
-echo section 6
-echo ---------
 # let intvar=expression
 # same function as declare -i var
 # no need to use $(( and ))
@@ -183,6 +179,7 @@ echo ---------
 # 	avoid special character replacement
 #	allows using whitespace
 
+echo $LINENO
 let x='(2 + 3) * 5'
 echo $x
 unset x
@@ -190,8 +187,6 @@ echo
 echo
 
 
-echo section 7
-echo ---------
 # arithmetic for loops
 # left out values evaluation to true
 
@@ -200,6 +195,7 @@ echo ---------
 # 	statements
 # done
 
+echo $LINENO
 for ((i=5; i<10; i++)); do
 	echo $i
 done
@@ -207,11 +203,11 @@ echo
 echo
 
 
-echo section 8
-echo ---------
 # arrays
 # elements can be accessed by index (starts at 0)
 # indices can be an arithmetic expression >= 0
+
+echo $LINENO
 echo ${BASH_VERSINFO[2+3]}
 # index 0 assumed if none provided
 echo $BASH_VERSINFO
@@ -222,22 +218,29 @@ echo $BASH_VERSINFO
 # unquoted - expands array to separate words
 # double quoted - @ is same, * expands array to first char in IFS
 # useful in for loops
+
 echo ${BASH_VERSINFO[@]}
 IFS=-
 echo "${BASH_VERSINFO[*]}"
 unset IFS
 echo
+echo
 
 # array can be manually created
 #	empty or nonempty
 # attributes apply to entire array
+
+echo $LINENO
 declare -a arr
 declare -p arr # print
 unset arr
 echo
+echo
 
 # assignment automatically creates array
 # unassigned values are not created (null if explicitly referenced)
+
+echo $LINENO
 arr[0]=a
 arr[2]=c
 echo ${arr[@]} # a c
@@ -248,48 +251,34 @@ echo ${arr[@]} # a c
 # 	out-of-order allowed
 # consecutive assignment above last specified index (or 0)
 # overwrites entire array if previously defined
+
 arr=(a b [3]=d e [2]=c)
 echo ${arr[@]} # a b c d e
 echo
+echo
 
 # # - check length (entire array or element)
+
+echo $LINENO
 echo ${#arr[@]}
 echo ${#arr[2]}
 echo
+echo
 
 # ! - check assigned indices
+
+echo $LINENO
 echo ${!arr[@]}
+echo
 echo
 
 # use unset to destoy
 # element or entire array
+
+echo $LINENO
 unset arr[2]
 echo ${arr[*]}
 
 unset arr
 declare -p arr
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

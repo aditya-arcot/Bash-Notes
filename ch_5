@@ -1,70 +1,65 @@
 # Flow Control
 
+path=${1:-.}
+echo path for cd: $path
+echo
+echo
+
+
 # command exit status
 # integer code returned to calling process
 # 0 is usually OK, 1-255 usually error
 
-echo section 0
-echo ---------
+
 # if / [elif] / [else] clause
 # uses exit status as conditionals
-
-path=${1:-.} # set cd path to . if none specified
-echo path for cd: $path
-
-# based on exit status of cd
+echo $LINENO
 if cd $path
 then
 	echo valid - code $? # stores exit status of last command
 else
 	echo invalid - code $? 
 fi
+echo
+echo
 
 
 # reverse status - !
 # combine statuses for multiple commands- &&, ||
 #	all commands are not necessarily run in early exit
 
-echo
-echo
 
-
-echo section 1
-echo ---------
 # builtin command [arguments]
 # specifies using builtin function over custom function with same name
+
 
 # return N
 # can be used in functions and sourced scripts
 # optional - default is $?
 # not the same purpose as return in other languages
 
+echo $LINENO
 cd () # other valid syntax for function
 {
-	echo custom cd wrapper
+	echo 'cd wrapper'
 	echo args: "$@"
+	
 	builtin cd "$@"
 	exit=$?
 	echo "$OLDPWD -> $PWD"
-	echo
+	
 	return $exit
 }
-cd ..
-cd bash
-
-echo unsetting wrapper
+cd .. && echo 'code: ' "$?" && echo
+cd - && echo 'code: ' "$?" && echo
 unset cd
+echo
 
 
 # exit N
 # exits entire script with status
 
-echo
-echo
 
-
-echo section 2
-echo ---------
 # condition tests - [ condition ] (aka test), [[ condition ]]
 # spaces required
 # double bracket test does not perform word splitting, pathname expansion
@@ -75,6 +70,13 @@ echo ---------
 # negating
 #	if ![ condition ]; then
 
+echo $LINENO
+a=2
+[ -n "$a" ]
+echo $?
+echo
+echo
+
 
 # string comparison operators
 # 2 strings
@@ -83,18 +85,6 @@ echo ---------
 # 	-n: not null
 #	-z: is null
 #	if using variable, enclose in "" to prevent possible expansion to null 
-
-
-# a defined
-a=2
-if [ -n "$a" ]; then
-	echo 'a is defined'
-fi
-
-# b undefined
-if [ -z "$b" ]; then
-	echo 'b is undefined'
-fi
 
 
 # file attribute operators
@@ -115,13 +105,12 @@ fi
 #	-G: file group ID matches yours
 
 
-# task_4-1 exists
-[ -a task_4-1 ]
-echo $?
-
+echo $LINENO
 # task_4-0 does not exist
 [ -a task_4-0 ]
 echo $?
+echo
+echo
 
 
 # ! can be used to negate
@@ -134,11 +123,14 @@ echo $?
 #		only available in test conditional expression
 
 
+echo $LINENO
 dirname=~/Desktop/bash
 echo $dirname
 if [ ! -z $dirname ] && [ \( -d $dirname \) -a \( -x $dirname \) ]; then
 	echo dirname string not null, is a directory, and is searchable
 fi
+echo
+echo
 
 
 # arithmetic test operators - used to combine integer tests with others in same conditional
@@ -149,12 +141,7 @@ fi
 # -ge: greater than or equal to
 # -ne: not equal
 
-echo
-echo
 
-
-echo section 3
-echo ---------
 # for loop
 # default list is "$@" - quoted list of cmd line args
 
@@ -163,6 +150,7 @@ echo ---------
 # 	statements that can use $name
 # done
 
+echo $LINENO
 IFS=:
 for dir in $PATH
 do
@@ -173,8 +161,6 @@ echo
 echo
 
 
-echo section 4
-echo ---------
 # case statement
 # patterns can be several patterns separated by |
 # no default case - can use *
@@ -186,6 +172,7 @@ echo ---------
 #		statements;;
 # esac
 
+echo $LINENO
 temp=2
 case $temp in
 	1 | 2)
@@ -198,8 +185,6 @@ echo
 echo
 
 
-echo section 5
-echo ---------
 # select statement
 # generate menu of each item in list
 # 	default: "$@"
@@ -212,6 +197,7 @@ echo ---------
 # 	statements that can use $name
 # done
 
+echo $LINENO
 IFS=" "
 PS3="choose option: " # used for custom prompt
 options="a b c "
@@ -226,8 +212,6 @@ echo
 echo
 
 
-echo section 6
-echo ---------
 # while statement
 # run while condition is true
 #	empty string evaluates as false
@@ -237,13 +221,6 @@ echo ---------
 # 	statements
 # done
 
-a=test
-while [ $a ]; do
-	echo in while loop
-	unset a
-done
-echo finished
-echo
 
 # until statement
 # run until condition is true / command gives 0 exit code
@@ -253,29 +230,4 @@ echo
 # do
 # 	statements
 # done
-
-until [ $a ]; do
-	echo in until loop
-	a=test
-done
-echo finished
-unset a
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -56,5 +56,86 @@
 # additional files opened for output or input are assigned from 3 on
 
 
+### String I/O
 
+## echo - print args to stdout
+# dash options
+# 	-e	turn on interpretation of backslash-escaped chars
+# 	-E	turn off interpretation of backslash-escaped chars
+# 	-n	skip final newline
+# escape sequences - see pg 169
+
+## printf - more powerful, flexible
+# no automatic trailing newline
+# usage - printf format-string [args]
+# 	can make parts of format string explicit
+# format reused as necessary to use up all args
+# if not enough args, use 0 or null, as appropriate
+# non-zero exit status if cannot perform format conversion
+
+# format specifiers
+# 	%c	char
+# 	%d	decimal int
+# 	%i	decimal int
+# 	%e	float in scientific notation ([-]d.precisione[+-]dd)
+# 	%E	float in scientific notation ([-]d.precisione[+-]dd)
+# 	%f	float ([-]ddd.precision)
+# 	%g	shorter of %e or %f conversion, with no trailing 0s
+# 	%G	shorter of %E or %f conversion, with no trailing 0s
+# 	%o	unsigned octal
+# 	%s	string
+# 	%u	unsigned decimal
+# 	%x	unsigned hex (a-f for 10-15)
+# 	%X	unsigned hex (A-F for 10-15)
+# 	%%	literal %
+# 	%b	instead of %s to expand escape sequences
+# 	%q	instead of %s to print so it can be used for shell input
+
+# optional modifiers - %flags width.precision format-specifier
+#	width and precision can be specified dynamically - use *
+
+# precision meaning
+# 	%d, %i, %o, %u, %x, %X	minimum number of digits to print
+# 				padded with leading zeros
+# 				default is 1
+# 	%e, %E			minimum number of digits to print
+# 				padded with zeros after decimal point
+# 				default is 10
+# 				0 inhibits printing of decimal point
+# 	%f			number of digits to right of decimal point
+# 	%g, %G			maximum number of significant digits
+# 	%s			maximum number of characters to print
+
+# flags
+# 	-	left-justify
+# 	space	prefix positive values with space and negative with minus
+# 	+	always prefix numeric values with sign
+# 	#	use alternate form
+# 	0	pad output with 0s, not spaces when field width wider than result
+# 		only applies to numeric
+
+echo $LINENO
+printf "%s %s\n" hello world
+printf "hello %s\n" world #explicit
+printf ".%-8s?%*s!\n" hello 3 world
+printf "%e\n" 123.456789
+printf "%15.*f\n" 5 123.456789
+echo
+
+## read - read values into shell vars
+# usage - read [var1] [var2] ...
+# steps
+# 	take line from stdin
+# 	break line into words delimited by any char in IFS
+# 	words assigned to vars
+# if more words than vars, excess assigned to last var
+# using with no var names assigns to $REPLY
+
+echo $LINENO
+echo enter 2 args
+read v1 v2
+echo v1: $v1
+echo v2: $v2
+unset v1 v2
+echo
 
