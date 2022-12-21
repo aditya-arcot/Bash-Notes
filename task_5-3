@@ -9,60 +9,64 @@ recls ()
 {
 	local line="|"
 	local singletab="\t"
-	local OPTIND OPTARG option depth hidden="false"
+	local OPTIND OPTARG option depth
+	local i maxtab tab file arg curr files
+	local IFS=$'\t'
 
 	while getopts ":d:h" option; do
 		case $option in
 			d )
-				if [ $OPTARG  -lt 1 ]; then
+				if [ "$OPTARG"  -lt 1 ]; then
 					echo depth must be greater than 0
 					return 1
 				fi
 				depth=$OPTARG;;
 			h )
-				hidden="true";;
+				shopt -s dotglob;;
 			\? ) echo usage: recls [-d depth] [-h]
 					return 1
 		esac
 	done
 	shift $((OPTIND-1))
 
-	if [ -z $depth ]; then
+	if [ -z "$depth" ]; then
 		depth=4
 	fi
 
-	local i maxtab
-	for ((i=0; i<$depth; i++)); do
+	for ((i=0; i<depth; i++)); do
 		maxtab+="$line$singletab"
 	done
 
-	if [ -z "$@" ]; then
+	if [ -z "$*" ]; then
 		__recls_helper .
 	else
-		__recls_helper $@
+		__recls_helper "$@"
 	fi
 
-	unset tab file subfile
+	shopt -u dotglob
 }
 
+__dir_empty ()
+{
+	[[ $(find "$1" -maxdepth 1 -mindepth 1 | wc -l) -eq 0 ]]
+}
 
 __recls_helper ()
 {
-	for file
+	for arg
 	do
-		if [ ! -e "$file" ]
+		if [ ! -e "$arg" ]
 		then
-			echo $file does not exist
-		elif [ -d "$file" ]
+			echo "$arg" does not exist
+		elif [ -d "$arg" ]
 		then
-			echo $file
-			if [ $hidden = true ]; then
-				__recdir $(ls --color=always -a $file)
-			else
-				__recdir $(ls --color=always $file)
-			fi
+			ls --color=always -d "$arg"
+			cd "$arg" || exit
+			curr=$PWD
+			cd - > /dev/null || exit
+			__recdir
 		else
-			echo $file
+			echo "$arg"
 		fi
 		echo
 	done
@@ -71,42 +75,37 @@ __recls_helper ()
 
 __recdir ()
 {
-	tab=$tab$line$singletab
-
-	if [ "$tab" = "$maxtab" ]; then
-		tab=${tab%"$line$singletab"}
-		echo -e -n $tab$line
-		echo -e "\t"...
-		return 0
+	if __dir_empty "$curr"; then
+		return
 	fi
 
-	for colored_subfile
+	tab=$tab$line$singletab
+	if [ "$tab" = "$maxtab" ]; then
+		tab=${tab%"$line$singletab"}
+		echo -e -n "$tab""$line"
+		echo -e "\t"...
+		return
+	fi
+
+	pushd "$curr" > /dev/null || exit
+	files=$(stat --printf '%n\t' -- *)
+
+	for file in $files
 	do
-		subfile=$(echo $colored_subfile | decolorize)
-		
-		if [ "$subfile" != .. ] && [ "$subfile" != . ]
-		then
-			echo -e -n $tab
-			echo -n $colored_subfile
+		echo -e -n "$tab"
+		echo -n "$(ls --color=always -d "$file")"
 
-			file=$file/$subfile
-
-			if [ -d "$file" ]
-			then
-				echo /
-				if [ $hidden = true ]; then
-					__recdir $(ls --color=always -a $file)
-				else
-					__recdir $(ls --color=always $file)
-				fi
-			else
-				#echo -e "$file"
-				echo
-			fi
-
-			file=${file%/*}
+		if [ -d "$file" ]; then
+			echo /
+			curr=$curr/$file
+			__recdir
+			curr=${curr%/*}
+		else
+			echo
 		fi
 	done
+
+	popd > /dev/null || exit
 
 	tab=${tab%"$line$singletab"}
 }
