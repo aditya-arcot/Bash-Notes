@@ -1,5 +1,8 @@
+#!/usr/bin/env bash
+
 # create background job and save both stdout and stderr to same file
 
-"@$" > logfile 2>&1 &
+"$@" >> logfile 2>&1 &
+
 
 
