@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Input/Ouput and Command-Line Processing
 
 ## I/O redirectors
