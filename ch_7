@@ -141,3 +141,54 @@ echo v2: $v2
 unset v1 v2
 echo
 
+# common uses
+#	reading line-by-line from file and storing parts as vars
+#	prompting user input
+
+# options
+#	-a		read into array
+#	-d string	delimiter - stop reading line when reaches
+#	-e		readline used to gather input line (for interactive shell scripts)
+#	-n chars	how many characters will be read
+#	-p string	print string before reading input	
+#	-r		don't use \ as continuation character, preserve escapes
+#	-t time		seconds to wait for input	
+#	-s		don't echo characters typed (ex: password)
+
+
+## I/O redirection for multiple commands
+# function call
+#	func < infile
+# function definition
+#	func () {...} < infile
+# end of flow-control construct
+#	while read a b; do ...; done < infile
+#	shell treats compound statements as single command
+# command block
+#	{ ... } < infile
+#	acts as function with no name
+
+
+## Command-Line Processing
+# each line that shell reads from stdin or script is a pipeline
+#	contains 1+ commands separated by 0+ pipe characters
+# for each pipeline, shell splits into commands, sets up I/O
+# for each command, following sequence
+#	1 - split into tokens separated by fixed set of metachars
+#		space tab newline ; , < > | &
+#		types of tokens - words, keywords, redirectors, semicolons
+#	2 - check
+
+
+
+
+
+
+
+
+
+
+
+
+
+
