@@ -2,7 +2,7 @@
 
 # Input/Ouput and Command-Line Processing
 
-## I/O redirectors
+### I/O redirectors
 # cmd1 | cmd2	pipe
 
 # > file	direct stdout to file (same as 1> file)
@@ -49,7 +49,7 @@
 # 		digit closed after being duplicated to n
 
 
-## File descriptors
+### File descriptors
 # integers (starting at 0) that refer to particular streams of data associated with a process
 # new process usually has 3
 # 	0 - stdin
@@ -140,6 +140,7 @@ echo v1: $v1
 echo v2: $v2
 unset v1 v2
 echo
+echo
 
 # common uses
 #	reading line-by-line from file and storing parts as vars
@@ -169,7 +170,7 @@ echo
 #	acts as function with no name
 
 
-## Command-Line Processing
+### Command-Line Processing
 # each line that shell reads from stdin or script is a pipeline
 #	contains 1+ commands separated by 0+ pipe characters
 # for each pipeline, shell splits into commands, sets up I/O
@@ -177,18 +178,65 @@ echo
 #	1 - split into tokens separated by fixed set of metachars
 #		space tab newline ; , < > | &
 #		types of tokens - words, keywords, redirectors, semicolons
-#	2 - check
+#	2 - check 1st token
+#		opening keyword - control-stucture opener, function, {, (
+#			command is compound
+#			read next command
+#			return to step 1
+#		other keyword - control-structure middle, end, logical operator
+#			syntax error
+#		not keyword
+#			continue
+#	3 - check 1st token
+#		alias match
+#			substitute, return to step 1 (allows for recursive)
+#		no match
+#			continue
+#	4 - brace expansion
+#	5 - ~ expansion
+#	6 - parameter (variable) expansion
+#	7 - command substitution
+#	8 - arithmetic substitution
+#	9 - word splitting
+#		for parts from steps 6-9
+#		using characters in $IFS
+#	10 - pathname expansion
+#	11 - command lookup for 1st word
+#		order - functions, builtins, scripts	
+#	12 - run command
 
+# quoting
+# 	single quotes - skip steps 1-10
+#		cannot have single quotes inside single quotes
+#	double quotes - skip steps 1-4, 9-10
+#		single quotes inside double quotes have no effect
+#		double quote can be inside double quote by escaping
 
+echo $LINENO
+person=aditya
+echo $person
+echo $"person"
+echo \$person
+echo '$person'
+echo "'$person'"
+echo ~
+echo "~"
+echo '~'
+unset person
+echo
 
+# changing command lookup order
+# 	command
+#		removes alias, function lookup
+#		only built-ins, commands found in search path
+#	builtin
+#		only built-ins
+#	enable
+#		enable / disable a shell built-in
 
-
-
-
-
-
-
-
+# eval
+#	tells script to take arguments and run through processing steps again 
+#	allows for modifying command strings in a program
 
 
 
