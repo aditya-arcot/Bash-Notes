@@ -1,0 +1,7 @@
+# kill all background jobs
+# default - TERM
+# specify other signals using - before
+#	ex: -QUIT
+
+kill "$@" $(jobs -p | tr '\n' ' ')
+

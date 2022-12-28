@@ -1,0 +1,111 @@
+#!/usr/bin/bash/env bash
+
+# Process Handling
+
+## Process IDs and job numbers
+# process can be run in background using &
+# example shell response - [2] 95
+#	job number (2)
+#		assigned by current shell
+#	PID (95)
+#		system-wide
+# example completion message - [2]+ Done  command
+# example non-zero code completion message - [2]+ Exit 12  command
+
+
+## Job control
+# fg - bring to foreground
+#	no args		most recent 
+#	%+		same as above
+#			explains + seen earlier
+#	%%		same as above
+#	%-		next most recent
+#	%string		job command begins with string
+#			most recent if multiple
+#	%?string	job command contains string
+#			must result in 1 job
+#	%N		job num N
+#	PID
+
+# jobs - list background jobs
+#	no options	list job num, status, command
+#	-l		include PIDs
+#	-p		only PIDs
+#	-n		only jobs whose status changed since last reported
+#	-r		only running jobs
+#	-x [command]	execute command after replacing job num with PID
+
+# use CTRL-Z to suspend job
+# stops job, can be resumed
+
+# bg - places job in bg
+# used after CTRL-Z
+# job continues running
+
+
+## Signals
+# message from a process to another
+# interprocess communication (IPC), like I/O pipeline
+# usually sent to subprocess
+# have numbers (starting at 1) and names
+# common uses - errors, events
+
+# control-key signals can be sent to currently-running process
+# sending others requires sending process to bg
+# can be set using stty
+
+# list of signals
+echo $LINENO
+kill -li && echo
+
+# kill [-signal] [process] - send signal to any process
+# default signal - TERM
+# process
+#	PID
+#	%N		job num
+#	%string		command name
+
+# programs can trap signals and take actions
+
+# example successful stop msg - [1]+ Terminated  command
+# if TERM signal does not work, try using QUIT
+#	kill -QUIT %1
+# if QUIT doesn't work, use KILL
+#	kill -KILL %1
+#	cannot be trapped by process
+#	last resort
+
+# ps - print process info
+# columns
+#	PID
+#	TTY	terminal or pseudo-terminal
+#	TIME	processor time used
+#	CMD
+# options
+# 	none	current terminal processes
+#	-a	processes associated with any terminal that aren't group leaders
+#	-A	all processes - helpful for finding runaway processes
+
+echo $LINENO
+pstree -p $(ps -o ppid:1= -p $$) && echo
+ps && echo
+ps -a && echo
+ps -A | head && echo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
