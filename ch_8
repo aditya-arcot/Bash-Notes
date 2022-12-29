@@ -1,6 +1,12 @@
-#!/usr/bin//env bash
+#!/usr/bin/env bash
 
 # Process Handling
+
+# check sourced
+if echo $0 | grep bash > /dev/null; then
+	echo this file must be executed, not sourced for traps to work
+	return 1 
+fi
 
 ## Process IDs and job numbers
 # process can be run in background using &
@@ -42,6 +48,9 @@
 # used after CTRL-Z
 # job continues running
 
+# $$ - current shell PID
+# $! - most recent background process PID
+
 
 ## Signals
 # message from a process to another
@@ -56,7 +65,7 @@
 
 # list of signals
 echo $LINENO
-kill -li && echo
+kill -l && echo
 
 # kill [-signal] [process] - send signal to any process
 # default signal - TERM
@@ -83,8 +92,8 @@ kill -li && echo
 #	CMD
 # options
 # 	none	current terminal processes
-#	-a	processes associated with any terminal that aren't group leaders
-#	-A	all processes - helpful for finding runaway processes
+#	-a	non group-leader processes associated with any terminal
+#	-A	all processes - helpful for finding runaways
 
 echo $LINENO
 pstree -p $(ps -o ppid:1= -p $$) && echo
@@ -93,19 +102,103 @@ ps -a && echo
 ps -A | head && echo
 
 
+## trap cmd sig1 sig2 ...
+# if any of specified signals are received, run cmd, resume execution after interrupted command
+# cmd
+#	string		run when triggered
+#	null string	signals are ignored
+#	-		reset trap
+
+# traps defined in invoking shell will be recognized in func
+# traps defined in func will be recognized by invoking shell after call
+
+echo $LINENO
+trapmsg () {
+	echo signal trapped
+	echo continuing...
+}
+settrap () {
+	echo setting trap
+	trap trapmsg INT
+}
+settrap
+echo sleeping for 5s
+for ((i=0;i<5;i++)); do
+	echo $i
+	sleep 1
+done
 
 
+## nohup cmd
+# prevent hangup (HUP) signal from terminating cmd
+# HUP signal sent when terminal / process that started cmd is closed / terminated
+# cmd continues to run when terminal is closed, user logs out
 
 
+## disown ID
+# ID is either PID or job ID
+# remove process from list of jobs (disown by shell)
+# alternate method of ignoring HUP signal
+# options
+#	-h	same as nohup
+#	-a	apply to all current shell jobs
+#	-r	apply to all current shell running jobs
 
 
+## Coroutines
+# 2+ processes explicitly programmed to run simultaneously and possibly communicate
+# possible advantage - less time if 2 processes use different types of resources
+# possible disadvantage - more time if 2 processes use similar types of resources
+#	thrashing - time being wasted switching
+
+# ex: pipeline b/w 2 commands
+#	create subprocesses
+#	set up I/O b/w subprocesses
+# 	run command 1 in subprocess 1
+#	run command 2 in subprocess 2
+#	wait for both to finish
+
+# simpler if processes do not need to communicate
+# scipt:
+#	cmd1 &	# run in background and move to next line
+#	cm2
+# may result in orphaned cmd1 if cmd2 finishes first & script ends
+
+# wait
+# no args - wait until all background jobs are completed
+# PID - wait on specific process
+
+# parallelization
+# multiple CPUs process coroutines simultaneously
+# major issue - concurrency control
+#	accessing same system resource at same time
 
 
+## Subshells
+# inherited characteristics
+#	current dir
+#	env vars
+#	stdin, out, error, open file descriptors
+#	ignored signals
+# non-inherited characteristics
+#	shell vars, except env and defined in .bashrc
+#	handling of non-ignored signals
+
+# nested subshell
+# similar to command blocks, except using () instead of {}
+# inherits vars from outer shell
+# 	command blocks inherit everything
+# vars, traps defined inside are not known to outer shell
+#	those defined in command blocks are
+# overall benefit - better scope control than command block
+# potential drawback - less efficient than command block
 
 
+## Process subsitution
+# cmd >(list) - input to a process
+# cmd <(list) - output from a process
+# list - process whose input or output is connected to something via named pipe
+# named pipe - temp file that acts like pipe with a name
 
-
-
-
-
+# ex: cmp <(prog1) <(prog2)
 

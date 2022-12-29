@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+if echo $0 | grep bash > /dev/null; then
+	echo script should be executed
+	return 1
+fi
+
+# allow user to compose email message
+# handle signals for early termination
+
+cleanup () {
+	# move to dead.letter in PWD
+	if [ -e $msgfile ]; then
+		mv $msgfile dead.letter
+	fi
+	exit 1
+}
+trap cleanup INT TERM
+
+# use shell PID for unique filename
+msgfile=/tmp/msg$$
+cat > $msgfile # ends with ^D
+
+# finished writing message
+# --- send message ---
+
+rm $msgfile
+
+
