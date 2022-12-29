@@ -1,4 +1,4 @@
-# Command-Line Options
+# Command-Line Options and Typed Variables
 
 # shift [N]
 # shifts arguments by N (1 default)
