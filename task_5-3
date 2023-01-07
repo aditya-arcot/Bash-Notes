@@ -1,9 +1,12 @@
 # recursive ls with hierarchy structure
-# default depth - 4
 
-# non-integer depth input results in ls without depth arg
-
-# use only local vars
+# options
+# -d#
+# 	depth
+# 	default - 4
+# 	must be positive int
+# -h
+# 	show hidden
 
 recls ()
 {
