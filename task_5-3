@@ -1,115 +1,170 @@
+#!/usr/bin/env bash
+
 # recursive ls with hierarchy structure
 
 # options
 # -d#
 # 	depth
-# 	default - 4
+# 	default - 3
 # 	must be positive int
 # -h
-# 	show hidden
+# 	show 
 
-recls ()
+verticalbar="|"
+tab="\t"
+IFS=";"
+hidden=false
+
+main ()
 {
-	local line="|"
-	local singletab="\t"
-	local OPTIND OPTARG option depth
-	local i maxtab tab file arg curr files
-	local IFS=$'\t'
+	process_options "$@"
+	shift $((OPTIND-1))
+	initialize
 
+	if [ -z "$*" ]; then
+		traverse_paths "."
+	else
+		traverse_paths "$@"
+	fi
+}
+
+process_options ()
+{
 	while getopts ":d:h" option; do
 		case $option in
+			# depth
 			d )
-				if [ "$OPTARG"  -lt 1 ]; then
-					echo depth must be greater than 0
+				# check for positive integer
+				if ! [[ "$OPTARG" =~ ^[1-9][0-9]*$ ]]; then 
+					echo "Invalid depth argument ($OPTARG). Depth must be a positive integer."
+					show_help
 					return 1
 				fi
-				depth=$OPTARG;;
+				depth=$OPTARG
+				echo "Specified depth: $depth"
+				;;
+			
+			# hidden
 			h )
-				shopt -s dotglob;;
-			\? ) echo usage: recls [-d depth] [-h]
-					return 1
+				echo "Showing hidden files / folders"
+				hidden=true
+				;;
+			
+			# invalid
+			\? ) 
+				echo "Invalid option: -$OPTARG"
+				show_help
+				return 1
+				;;
 		esac
 	done
-	shift $((OPTIND-1))
+}
 
+show_help ()
+{
+	echo "Usage: recls [-d depth] [-h]"
+	echo "Options:"
+	echo "  -d depth: Specify the depth of recursion (default: 3)"
+	echo "  -h: Show hidden files and directories"
+}
+
+initialize ()
+{
 	if [ -z "$depth" ]; then
-		depth=4
+		depth=3
+		echo "Default depth: 3"
 	fi
 
 	for ((i=0; i<depth; i++)); do
-		maxtab+="$line$singletab"
+		maxtab+="$verticalbar$tab"
 	done
-
-	if [ -z "$*" ]; then
-		__recls_helper .
-	else
-		__recls_helper "$@"
-	fi
-
-	shopt -u dotglob
 }
 
-__dir_empty ()
-{
-	[[ $(find "$1" -maxdepth 1 -mindepth 1 | wc -l) -eq 0 ]]
-}
-
-__recls_helper ()
+traverse_paths ()
 {
 	for arg
 	do
-		if [ ! -e "$arg" ]
+		if [ ! -e "$arg" ] # does not exist
 		then
-			echo "$arg" does not exist
-		elif [ -d "$arg" ]
+			echo "not a valid file or directory ($arg)"
+
+		elif [ "$arg" = "." ] # current dir
 		then
-			ls --color=always -d "$arg"
-			cd "$arg" || exit
-			curr=$PWD
-			cd - > /dev/null || exit
-			__recdir
-		else
+			echo "$(ls --color=always -d)/"
+			if [ -r "$arg" ]; then
+				curr=$PWD
+				explore_directory
+			fi
+		
+		elif [ -d "$arg" ] || [ -L "$arg" ] # another dir
+		then
+			echo "$(ls --color=always -d "$arg")/"
+			if [ -r "$arg" ]; then
+				cd "$arg" || exit
+				curr=$PWD
+				cd "-" > /dev/null || exit
+				explore_directory
+			fi
+		
+		else # file
 			echo "$arg"
 		fi
 		echo
 	done
-
 }
 
-__recdir ()
+explore_directory ()
 {
-	if __dir_empty "$curr"; then
+	# empty dir
+	if [[ $(find -L "$curr" -maxdepth 1 -mindepth 1 2>/dev/null | wc -l) -eq 0 ]]
+	then
 		return
 	fi
 
-	tab=$tab$line$singletab
-	if [ "$tab" = "$maxtab" ]; then
-		tab=${tab%"$line$singletab"}
-		echo -e -n "$tab""$line"
+	indent=$indent$verticalbar$tab
+
+	# max depth
+	if [ "$indent" = "$maxtab" ]; then
+		indent=${indent%"$verticalbar$tab"}
+		echo -en "$indent$verticalbar"
 		echo -e "\t"...
 		return
 	fi
 
 	pushd "$curr" > /dev/null || exit
-	files=$(stat --printf '%n\t' -- *)
 
-	for file in $files
-	do
-		echo -e -n "$tab"
-		echo -n "$(ls --color=always -d "$file")"
-
-		if [ -d "$file" ]; then
-			echo /
-			curr=$curr/$file
-			__recdir
-			curr=${curr%/*}
-		else
-			echo
-		fi
-	done
+	# including hidden files
+	if [ "$hidden" = true ]; then
+		for file in $(stat -n -f '%N;' -- * .* 2>/dev/null); do
+			if [ $file != '.' ] && [ $file != '..' ]; then
+				display_entry_info
+			fi
+		done
+	else
+		for file in $(stat -n -f '%N;' -- * 2>/dev/null); do
+			display_entry_info
+		done
+	fi
 
 	popd > /dev/null || exit
-
-	tab=${tab%"$line$singletab"}
+	indent=${indent%"$verticalbar$tab"}
 }
 
+display_entry_info ()
+{
+	echo -en "$indent"
+	echo -n "$(ls --color=always -d "$file")"
+
+	# dir
+	if [ -d "$file" ] ||  [ -L "$file" ]; then
+		echo /
+		curr="$curr/$file"
+		explore_directory
+		curr="${curr%/*}"
+	# file
+	else
+		echo
+	fi
+}
+
+main "$@"
