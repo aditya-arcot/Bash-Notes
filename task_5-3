@@ -38,7 +38,6 @@ process_options ()
 				if ! [[ "$OPTARG" =~ ^[1-9][0-9]*$ ]]; then 
 					echo "Invalid depth argument ($OPTARG). Depth must be a positive integer."
 					show_help
-					return 1
 				fi
 				depth=$OPTARG
 				echo "Specified depth: $depth"
@@ -54,7 +53,6 @@ process_options ()
 			\? ) 
 				echo "Invalid option: -$OPTARG"
 				show_help
-				return 1
 				;;
 		esac
 	done
@@ -66,6 +64,7 @@ show_help ()
 	echo "Options:"
 	echo "  -d depth: Specify the depth of recursion (default: 3)"
 	echo "  -h: Show hidden files and directories"
+	exit 1
 }
 
 initialize ()
