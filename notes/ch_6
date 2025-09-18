@@ -47,7 +47,7 @@ while getopts ":abcd:" option; do
 			return 1
 	esac
 done
-shift $((OPTIND-1))
+shift $((OPTIND - 1))
 
 echo args: $*
 set --
